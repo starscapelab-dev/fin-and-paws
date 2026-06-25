@@ -1,6 +1,7 @@
 'use client';
 import { Suspense, useEffect, useMemo, useState } from 'react';
 import AppShell from '@/components/AppShell';
+import PageHeader from '@/components/PageHeader';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { Search, Plus, AlertTriangle, ChevronRight, Package } from 'lucide-react';
@@ -41,40 +42,39 @@ function InventoryContent() {
 
   return (
     <AppShell>
-      <div className="bg-brand-gradient text-white px-4 sm:px-6 pt-12 md:pt-8 pb-6 md:mx-4 md:mt-4 md:rounded-3xl">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h1 className="text-2xl font-extrabold tracking-tight">Inventory</h1>
-            <p className="text-white/70 text-xs mt-0.5">{products.length} product{products.length !== 1 ? 's' : ''}</p>
-          </div>
+      <PageHeader
+        title="Inventory"
+        subtitle={`${products.length} product${products.length !== 1 ? 's' : ''}`}
+        right={
           <Link href="/inventory/new" className="bg-white text-brand-600 font-semibold text-sm px-4 py-2.5 rounded-xl flex items-center gap-1.5 shadow-sm active:scale-95 transition-transform">
             <Plus size={18} /> <span className="hidden sm:inline">Add</span>
           </Link>
-        </div>
-        {/* Search */}
-        <div className="relative">
-          <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-brand-600/60" />
-          <input
-            type="text"
-            placeholder="Search products..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-11 pr-4 py-3 bg-white rounded-xl text-sm text-ink outline-none focus:ring-2 focus:ring-white/60"
-          />
-        </div>
-      </div>
-
-      {/* Category chips */}
-      <div className="px-4 sm:px-6 pt-4">
-        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
-          {CATEGORIES.map((cat) => (
-            <Chip key={cat} active={category === cat} onClick={() => setCategory(cat)}>{cat}</Chip>
-          ))}
-          <Chip active={category === 'low'} danger onClick={() => setCategory('low')}>
-            <AlertTriangle size={12} /> Low Stock
-          </Chip>
-        </div>
-      </div>
+        }
+        floating={
+          <>
+            {/* Search */}
+            <div className="relative">
+              <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted" />
+              <input
+                type="text"
+                placeholder="Search products..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full pl-11 pr-4 py-3 bg-canvas rounded-xl text-sm text-ink outline-none focus:ring-2 focus:ring-brand-200"
+              />
+            </div>
+            {/* Category chips */}
+            <div className="flex gap-2 overflow-x-auto pb-0.5 mt-2.5 scrollbar-hide">
+              {CATEGORIES.map((cat) => (
+                <Chip key={cat} active={category === cat} onClick={() => setCategory(cat)}>{cat}</Chip>
+              ))}
+              <Chip active={category === 'low'} danger onClick={() => setCategory('low')}>
+                <AlertTriangle size={12} /> Low Stock
+              </Chip>
+            </div>
+          </>
+        }
+      />
 
       {/* List */}
       <div className="px-4 sm:px-6 pt-4">

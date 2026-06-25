@@ -51,6 +51,35 @@ body {
 .bg-brand-gradient {
   background-image: linear-gradient(135deg, var(--color-brand-500) 0%, var(--color-brand-600) 55%, #0a6f9e 130%);
 }
+
+/* Richer header surface: brand gradient + a soft radial glow for depth. */
+.header-surface {
+  position: relative;
+  isolation: isolate;
+  background-image:
+    radial-gradient(120% 120% at 0% 0%, rgba(45, 186, 166, 0.55) 0%, transparent 55%),
+    radial-gradient(140% 120% at 100% 0%, rgba(10, 111, 158, 0.55) 0%, transparent 50%),
+    linear-gradient(135deg, var(--color-brand-500) 0%, var(--color-brand-600) 60%, #0a6f9e 130%);
+}
+/* Faint dotted texture so the gradient doesn't read as a flat slab. */
+.header-surface::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.10) 1px, transparent 1.4px);
+  background-size: 16px 16px;
+  mask-image: linear-gradient(to bottom, black, transparent 85%);
+  -webkit-mask-image: linear-gradient(to bottom, black, transparent 85%);
+}
+
+/* Top padding that respects the device status bar / notch. */
+.pt-safe {
+  padding-top: calc(env(safe-area-inset-top) + 2.25rem);
+}
+@media (min-width: 768px) {
+  .pt-safe { padding-top: 2rem; }
+}
 .bg-coral-gradient {
   background-image: linear-gradient(135deg, var(--color-coral-400) 0%, var(--color-coral-600) 100%);
 }

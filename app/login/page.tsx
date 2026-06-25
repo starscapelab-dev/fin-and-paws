@@ -1,7 +1,23 @@
 'use client';
+import { Suspense } from 'react';
 import { signIn } from 'next-auth/react';
+import { useSearchParams } from 'next/navigation';
+import Image from 'next/image';
+import { AlertTriangle } from 'lucide-react';
 
 export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-brand-gradient" />}>
+      <LoginContent />
+    </Suspense>
+  );
+}
+
+function LoginContent() {
+  // NextAuth redirects rejected sign-ins here with ?error=AccessDenied.
+  const error = useSearchParams().get('error');
+  const denied = error === 'AccessDenied';
+
   return (
     <div className="min-h-screen bg-brand-gradient flex flex-col items-center justify-center px-4 relative overflow-hidden">
       {/* Decorative blobs */}
@@ -9,11 +25,20 @@ export default function LoginPage() {
       <div className="absolute -bottom-24 -right-16 w-80 h-80 rounded-full bg-coral-400/30 blur-3xl" />
 
       <div className="relative bg-white rounded-3xl shadow-2xl p-8 w-full max-w-sm text-center animate-rise">
-        <div className="w-16 h-16 rounded-2xl bg-brand-gradient flex items-center justify-center text-3xl mx-auto mb-5 shadow-pop">
-          🐾
+        <div className="w-20 h-20 rounded-2xl overflow-hidden mx-auto mb-5 shadow-pop ring-1 ring-black/5">
+          <Image src="/logo.jpg" alt="Fin & Paws logo" width={150} height={150} className="w-full h-full object-cover" priority />
         </div>
         <h1 className="text-2xl font-extrabold text-ink tracking-tight">Fin &amp; Paws</h1>
         <p className="text-muted text-sm mb-8">Inventory Management</p>
+
+        {denied && (
+          <div className="bg-coral-50 border border-coral-200 rounded-2xl p-3 mb-5 flex items-center gap-2.5 text-left">
+            <AlertTriangle className="text-coral-600 shrink-0" size={18} />
+            <p className="text-coral-700 text-xs font-medium">
+              That account isn’t authorised. Contact the owner to be added.
+            </p>
+          </div>
+        )}
 
         <button
           onClick={() => signIn('google', { callbackUrl: '/dashboard' })}

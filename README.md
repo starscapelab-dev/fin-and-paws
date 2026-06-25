@@ -70,6 +70,11 @@ Share the sheet with `GOOGLE_SERVICE_ACCOUNT_EMAIL` as an **Editor**.
 
 4. **Deploy.** After the first deploy, visit the URL and sign in to verify.
 
-> ⚠️ **Anyone with a Google account can currently sign in** — there is no
-> email/domain allowlist yet. Add a `signIn` callback in `lib/auth.ts` to
-> restrict access to your staff before sharing the URL widely.
+### Access control
+
+Sign-in is restricted to an **email allowlist** in `lib/allowlist.ts`. Add the
+emails (or whole domains like `@yourshop.com`) that may use the app — everyone
+else is blocked at sign-in and sees an "account isn't authorised" message.
+
+You can also set `ALLOWED_EMAILS` in Vercel (comma-separated) to add addresses
+without editing code; both sources are merged.

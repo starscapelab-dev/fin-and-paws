@@ -1,8 +1,9 @@
 'use client';
 import { useEffect, useMemo, useState } from 'react';
 import AppShell from '@/components/AppShell';
+import PageHeader from '@/components/PageHeader';
 import Link from 'next/link';
-import { ShoppingCart, PackagePlus, ScanLine, ArrowLeftRight } from 'lucide-react';
+import { ShoppingCart, PackagePlus, ArrowLeftRight } from 'lucide-react';
 import clsx from 'clsx';
 
 type Tx = {
@@ -44,26 +45,26 @@ export default function TransactionsPage() {
 
   return (
     <AppShell>
-      <div className="bg-brand-gradient text-white px-4 sm:px-6 pt-12 md:pt-8 pb-6 md:mx-4 md:mt-4 md:rounded-3xl">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h1 className="text-2xl font-extrabold tracking-tight">Transactions</h1>
-            <p className="text-white/70 text-xs mt-0.5">{filtered.length} record{filtered.length !== 1 ? 's' : ''}</p>
-          </div>
-          <Link href="/scan" className="bg-white text-brand-600 font-semibold text-sm px-4 py-2.5 rounded-xl flex items-center gap-1.5 shadow-sm active:scale-95 transition-transform">
-            <ScanLine size={18} /> <span className="hidden sm:inline">New</span>
+      <PageHeader
+        title="Transactions"
+        subtitle={`${filtered.length} record${filtered.length !== 1 ? 's' : ''}`}
+        right={
+          <Link href="/sell" className="bg-white text-brand-600 font-semibold text-sm px-4 py-2.5 rounded-xl flex items-center gap-1.5 shadow-sm active:scale-95 transition-transform">
+            <ShoppingCart size={18} /> <span className="hidden sm:inline">Sell</span>
           </Link>
-        </div>
-        <div className="flex gap-2">
-          {FILTERS.map((f) => (
-            <button key={f} onClick={() => setFilter(f)}
-              className={clsx('px-4 py-1.5 rounded-full text-xs font-semibold transition',
-                filter === f ? 'bg-white text-brand-600' : 'bg-white/15 text-white')}>
-              {f === 'All' ? 'All' : f === 'Sale' ? 'Sales' : 'Restocks'}
-            </button>
-          ))}
-        </div>
-      </div>
+        }
+        inHeader={
+          <div className="flex gap-2">
+            {FILTERS.map((f) => (
+              <button key={f} onClick={() => setFilter(f)}
+                className={clsx('px-4 py-1.5 rounded-full text-xs font-semibold transition',
+                  filter === f ? 'bg-white text-brand-600' : 'bg-white/15 text-white hover:bg-white/25')}>
+                {f === 'All' ? 'All' : f === 'Sale' ? 'Sales' : 'Restocks'}
+              </button>
+            ))}
+          </div>
+        }
+      />
 
       <div className="px-4 sm:px-6 pt-5">
         {loading ? (
@@ -76,7 +77,7 @@ export default function TransactionsPage() {
               <ArrowLeftRight size={28} />
             </div>
             <p className="font-medium">No transactions yet</p>
-            <Link href="/scan" className="text-brand-600 text-sm font-semibold mt-2 inline-block">Record your first sale →</Link>
+            <Link href="/sell" className="text-brand-600 text-sm font-semibold mt-2 inline-block">Record your first sale →</Link>
           </div>
         ) : (
           groups.map(([day, items]) => (

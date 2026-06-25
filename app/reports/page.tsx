@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import AppShell from '@/components/AppShell';
+import PageHeader from '@/components/PageHeader';
 import { ShoppingCart, TrendingUp, PackagePlus, AlertTriangle } from 'lucide-react';
 import clsx from 'clsx';
 
@@ -37,18 +38,21 @@ export default function ReportsPage() {
 
   return (
     <AppShell>
-      <div className="bg-brand-gradient text-white px-4 sm:px-6 pt-12 md:pt-8 pb-6 md:mx-4 md:mt-4 md:rounded-3xl">
-        <h1 className="text-2xl font-extrabold tracking-tight mb-4">Reports</h1>
-        <div className="flex gap-2">
-          {PERIODS.map((p) => (
-            <button key={p.key} onClick={() => setPeriod(p.key)}
-              className={clsx('px-4 py-1.5 rounded-full text-xs font-semibold transition',
-                period === p.key ? 'bg-white text-brand-600' : 'bg-white/15 text-white')}>
-              {p.label}
-            </button>
-          ))}
-        </div>
-      </div>
+      <PageHeader
+        title="Reports"
+        subtitle="Sales & stock at a glance"
+        inHeader={
+          <div className="flex gap-2">
+            {PERIODS.map((p) => (
+              <button key={p.key} onClick={() => setPeriod(p.key)}
+                className={clsx('px-4 py-1.5 rounded-full text-xs font-semibold transition',
+                  period === p.key ? 'bg-white text-brand-600' : 'bg-white/15 text-white hover:bg-white/25')}>
+                {p.label}
+              </button>
+            ))}
+          </div>
+        }
+      />
 
       <div className="px-4 sm:px-6 pt-5">
         {loading || !report ? (

@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
 import { LogOut } from 'lucide-react';
+import Image from 'next/image';
 import clsx from 'clsx';
 import { NAV_ITEMS } from './nav';
 
@@ -15,8 +16,8 @@ export default function Sidebar() {
       {/* Brand */}
       <div className="px-6 pt-7 pb-6">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-brand-gradient flex items-center justify-center text-xl shadow-pop">
-            🐾
+          <div className="w-10 h-10 rounded-2xl overflow-hidden shadow-pop ring-1 ring-black/5">
+            <Image src="/logo.jpg" alt="Fin & Paws logo" width={150} height={150} className="w-full h-full object-cover" />
           </div>
           <div className="leading-tight">
             <p className="font-extrabold text-ink tracking-tight">Fin &amp; Paws</p>

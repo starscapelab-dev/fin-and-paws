@@ -2,7 +2,8 @@
 import { useEffect, useState } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import AppShell from '@/components/AppShell';
-import { Package, AlertTriangle, TrendingUp, ShoppingCart, LogOut, ScanLine, Plus, ChevronRight } from 'lucide-react';
+import PageHeader from '@/components/PageHeader';
+import { Package, AlertTriangle, TrendingUp, ShoppingCart, LogOut, Plus, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import clsx from 'clsx';
 
@@ -22,28 +23,23 @@ export default function Dashboard() {
 
   return (
     <AppShell>
-      {/* Header */}
-      <div className="bg-brand-gradient text-white px-4 sm:px-6 pt-12 md:pt-8 pb-10 md:mx-4 md:mt-4 md:rounded-3xl">
-        <div className="flex justify-between items-start">
-          <div>
-            <p className="text-white/70 text-sm">Welcome back,</p>
-            <h1 className="text-2xl font-extrabold tracking-tight">
-              {session?.user?.name?.split(' ')[0] ?? 'there'} 👋
-            </h1>
-            <p className="text-white/70 text-xs mt-1">🐾 Fin &amp; Paws · Today</p>
-          </div>
-          {/* Sign-out is in the sidebar on desktop; keep it here for mobile. */}
+      <PageHeader
+        eyebrow="Welcome back,"
+        title={<>{session?.user?.name?.split(' ')[0] ?? 'there'} 👋</>}
+        subtitle="🐾 Fin & Paws · Today"
+        right={
+          // Sign-out is in the sidebar on desktop; keep it here for mobile.
           <button
             onClick={() => signOut({ callbackUrl: '/login' })}
-            className="md:hidden bg-white/15 hover:bg-white/25 transition-colors p-2.5 rounded-xl"
+            className="md:hidden bg-white/15 hover:bg-white/25 active:scale-95 transition p-2.5 rounded-xl"
             aria-label="Sign out"
           >
             <LogOut size={18} />
           </button>
-        </div>
-      </div>
+        }
+      />
 
-      <div className="px-4 sm:px-6 -mt-6 space-y-4">
+      <div className="px-4 sm:px-6 pt-4 space-y-4">
         {/* Low Stock Alert */}
         {s?.lowStockCount > 0 && (
           <Link href="/inventory?filter=low" className="block animate-rise">
@@ -102,9 +98,9 @@ export default function Dashboard() {
           <div className="bg-white rounded-3xl shadow-card p-5">
             <h2 className="font-bold text-ink text-sm mb-3">Quick Actions</h2>
             <div className="grid grid-cols-2 gap-3">
-              <Link href="/scan" className="bg-brand-gradient text-white rounded-2xl p-5 flex flex-col items-center gap-2 shadow-pop active:scale-[0.98] transition-transform">
-                <ScanLine size={26} />
-                <p className="text-sm font-bold">Scan &amp; Sell</p>
+              <Link href="/sell" className="bg-brand-gradient text-white rounded-2xl p-5 flex flex-col items-center gap-2 shadow-pop active:scale-[0.98] transition-transform">
+                <ShoppingCart size={26} />
+                <p className="text-sm font-bold">Sell</p>
               </Link>
               <Link href="/inventory/new" className="bg-coral-gradient text-white rounded-2xl p-5 flex flex-col items-center gap-2 shadow-pop active:scale-[0.98] transition-transform">
                 <Plus size={26} />

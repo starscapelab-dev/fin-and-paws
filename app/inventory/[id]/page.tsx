@@ -2,7 +2,8 @@
 import { use, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import PageHeader from '@/components/PageHeader';
-import { Save, Trash2 } from 'lucide-react';
+import BarcodeScanner from '@/components/BarcodeScanner';
+import { Save, Trash2, Camera } from 'lucide-react';
 
 const CATEGORIES = ['Fish', 'Aquarium', 'Pet Food', 'Pets', 'Accessories'];
 const UNITS = ['pcs', 'kg', 'g', 'L', 'ml', 'pack', 'pair', 'set'];
@@ -14,6 +15,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
   const router = useRouter();
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [scan, setScan] = useState(false);
   const [form, setForm] = useState<any>(null);
 
   useEffect(() => {
@@ -72,7 +74,13 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
       <div className="px-4 sm:px-6 pt-5 max-w-2xl mx-auto">
         <div className="bg-white rounded-3xl shadow-card p-5 sm:p-6 space-y-4">
           <Field label="Barcode">
-            <input className={input} value={form.barcode} onChange={(e) => set('barcode', e.target.value)} />
+            <div className="flex gap-2">
+              <input className={input} value={form.barcode} onChange={(e) => set('barcode', e.target.value)} />
+              <button type="button" onClick={() => setScan(true)}
+                className="shrink-0 px-4 rounded-xl bg-brand-gradient text-white shadow-pop flex items-center gap-1.5 text-sm font-bold active:scale-95 transition-transform">
+                <Camera size={16} /> Scan
+              </button>
+            </div>
           </Field>
           <Field label="Product Name">
             <input className={input} value={form.name} onChange={(e) => set('name', e.target.value)} />
@@ -111,6 +119,13 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
           {saving ? 'Saving…' : 'Save Changes'}
         </button>
       </div>
+
+      {scan && (
+        <BarcodeScanner
+          onResult={(text) => { set('barcode', text); setScan(false); }}
+          onClose={() => setScan(false)}
+        />
+      )}
     </div>
   );
 }

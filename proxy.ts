@@ -11,6 +11,6 @@ export const config = {
     '/inventory/:path*',
     '/transactions/:path*',
     '/reports/:path*',
-    '/scan/:path*',
+    '/sell/:path*',
   ],
 };
