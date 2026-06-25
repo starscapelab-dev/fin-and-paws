@@ -35,8 +35,12 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+# google service-account credentials (never commit secrets)
 .google/
-*.json
+google-credentials*.json
+service-account*.json
+*-credentials.json
 
 # typescript
 *.tsbuildinfo

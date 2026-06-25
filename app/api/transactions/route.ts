@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getTransactions, addTransaction, updateProductStock, getProducts } from '@/lib/sheets';
+import { requireAuth } from '@/lib/requireAuth';
 
 export async function GET() {
+  const unauth = await requireAuth();
+  if (unauth) return unauth;
   try {
     const transactions = await getTransactions();
     return NextResponse.json(transactions);
@@ -11,6 +14,8 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
+  const unauth = await requireAuth();
+  if (unauth) return unauth;
   try {
     const body = await req.json();
     const { productId, type, quantity, notes, productName } = body;

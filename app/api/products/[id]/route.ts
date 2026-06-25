@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getProducts, findProductRow, sheets, SHEET_ID } from '@/lib/sheets';
+import { requireAuth } from '@/lib/requireAuth';
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const unauth = await requireAuth();
+  if (unauth) return unauth;
   try {
     const { id } = await params;
     const products = await getProducts();
@@ -14,6 +17,8 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 }
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const unauth = await requireAuth();
+  if (unauth) return unauth;
   try {
     const { id } = await params;
     const body = await req.json();
@@ -46,6 +51,8 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 }
 
 export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const unauth = await requireAuth();
+  if (unauth) return unauth;
   try {
     const { id } = await params;
     const sheetRow = await findProductRow(id);

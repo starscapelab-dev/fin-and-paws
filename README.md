@@ -1,36 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🐾 Fin & Paws — Inventory Management
 
-## Getting Started
+A mobile-first inventory app for a pet & aquarium shop. Built with Next.js 16
+(App Router), NextAuth (Google sign-in), and Google Sheets as the data store.
 
-First, run the development server:
+- **Live:** https://fin-and-paws.vercel.app/
+- **Stack:** Next.js 16 · React 19 · Tailwind v4 · NextAuth · Google Sheets API
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Google sign-in (gated app routes via `proxy.ts`; API routes guarded server-side)
+- Inventory CRUD with low-stock alerts
+- Scan & sell / restock by barcode (hardware-scanner friendly)
+- Transaction history and period reports (daily / weekly / monthly)
+- Responsive: bottom tab bar on mobile, sidebar on desktop
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Local development
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Copy `.env.example` to `.env.local` and fill in the values (see below).
+2. Install and run:
 
-## Learn More
+   ```bash
+   npm install
+   npm run dev
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+3. Open http://localhost:3000.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Environment variables
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+All are required. See `.env.example` for the canonical list and the expected
+Google Sheet tab/column layout.
 
-## Deploy on Vercel
+| Variable | Purpose |
+|---|---|
+| `NEXTAUTH_SECRET` | Session encryption (`openssl rand -base64 32`) |
+| `NEXTAUTH_URL` | Canonical app URL (no trailing slash) |
+| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Google OAuth client |
+| `GOOGLE_SERVICE_ACCOUNT_EMAIL` | Service account with access to the sheet |
+| `GOOGLE_PRIVATE_KEY` | Service-account key (keep the literal `\n` escapes) |
+| `GOOGLE_SHEETS_ID` | Spreadsheet ID from its URL |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The Google Sheet must have two tabs with these header rows:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Products** — `id | barcode | name | category | stock | threshold | price | unit | notes | lastUpdated`
+- **Transactions** — `id | date | productId | productName | type | quantity | notes`
+
+Share the sheet with `GOOGLE_SERVICE_ACCOUNT_EMAIL` as an **Editor**.
+
+## Deploying to Vercel
+
+1. **Import the repo** into Vercel (framework auto-detected as Next.js; no build
+   overrides needed). The API routes run on the Node.js serverless runtime,
+   which `googleapis` requires — don't force the Edge runtime.
+
+2. **Add environment variables** (Project → Settings → Environment Variables) for
+   the Production environment. Use the same values as `.env.local`, **except**:
+
+   - `NEXTAUTH_URL=https://fin-and-paws.vercel.app`
+   - `GOOGLE_PRIVATE_KEY` — paste the key with its literal `\n` escapes intact
+     (the app converts them to newlines at runtime).
+
+3. **Update Google OAuth** (Google Cloud Console → APIs & Services → Credentials
+   → your OAuth client):
+
+   - **Authorized JavaScript origins:** `https://fin-and-paws.vercel.app`
+   - **Authorized redirect URIs:** `https://fin-and-paws.vercel.app/api/auth/callback/google`
+
+   Without the redirect URI, sign-in fails with `redirect_uri_mismatch`.
+
+4. **Deploy.** After the first deploy, visit the URL and sign in to verify.
+
+> ⚠️ **Anyone with a Google account can currently sign in** — there is no
+> email/domain allowlist yet. Add a `signIn` callback in `lib/auth.ts` to
+> restrict access to your staff before sharing the URL widely.

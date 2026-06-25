@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getTransactions, getProducts } from '@/lib/sheets';
+import { requireAuth } from '@/lib/requireAuth';
 
 export async function GET(req: NextRequest) {
+  const unauth = await requireAuth();
+  if (unauth) return unauth;
   try {
     const { searchParams } = new URL(req.url);
     const period = searchParams.get('period') || 'daily'; // daily | weekly | monthly
