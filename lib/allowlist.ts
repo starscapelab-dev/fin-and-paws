@@ -11,7 +11,8 @@
 export const ALLOWED_EMAILS: string[] = [
   'akshayvt0487@gmail.com',
   'finandpaws@gmail.com',
-'geojohn447@gmail.com'
+'geojohn447@gmail.com',
+'nidhakrishna1999@gmail.com'
   // '@yourshopdomain.com',
 ];
 
