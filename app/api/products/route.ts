@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getProducts, addProduct } from '@/lib/sheets';
 import { requireAuth } from '@/lib/requireAuth';
 
+// Never serve the product list from the Route Handler cache — it must always
+// reflect the latest rows in the sheet (e.g. a just-added item).
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   const unauth = await requireAuth();
   if (unauth) return unauth;

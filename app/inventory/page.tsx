@@ -25,10 +25,22 @@ function InventoryContent() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/products')
-      .then((r) => r.json())
-      .then((data) => { setProducts(Array.isArray(data) ? data : []); setLoading(false); })
-      .catch(() => setLoading(false));
+    // cache: 'no-store' guards against a GET being served stale from the
+    // browser/HTTP cache after a product is added.
+    const load = () =>
+      fetch('/api/products', { cache: 'no-store' })
+        .then((r) => r.json())
+        .then((data) => { setProducts(Array.isArray(data) ? data : []); setLoading(false); })
+        .catch(() => setLoading(false));
+
+    load();
+
+    // Returning from /inventory/new via the App Router restores this page
+    // from the client cache without remounting, so the effect above won't
+    // re-run. Reload whenever the tab/page regains focus so a freshly added
+    // item shows up.
+    window.addEventListener('focus', load);
+    return () => window.removeEventListener('focus', load);
   }, []);
 
   const filtered = useMemo(() => products.filter((p) => {

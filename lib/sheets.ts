@@ -52,9 +52,15 @@ export async function addProduct(product: {
 }) {
   const id = `P${Date.now()}`;
   const lastUpdated = new Date().toISOString();
-  await sheets.spreadsheets.values.append({
+
+  // Write to an explicit A:J range instead of values.append(). append()
+  // auto-detects the "table" and had been anchoring new rows one column to
+  // the right (id landing in B, everything shifted into B:K), so new items
+  // never lined up with the A:J columns getProducts() reads.
+  const nextRow = await findFirstEmptyRow();
+  await sheets.spreadsheets.values.update({
     spreadsheetId: SHEET_ID,
-    range: 'Products!A:J',
+    range: `Products!A${nextRow}:J${nextRow}`,
     valueInputOption: 'USER_ENTERED',
     requestBody: {
       values: [[
@@ -72,6 +78,23 @@ export async function addProduct(product: {
     },
   });
   return { id, ...product, lastUpdated };
+}
+
+// First writable 1-based row for a new product. We read column A and append
+// after the last row that has an id, so we never overwrite a real product and
+// always write into the A:J columns. (Blank rows left behind by deletes below
+// the last id are reused, which is fine.)
+export async function findFirstEmptyRow(): Promise<number> {
+  const res = await sheets.spreadsheets.values.get({
+    spreadsheetId: SHEET_ID,
+    range: 'Products!A2:A',
+  });
+  const ids = res.data.values || [];
+  let lastFilled = 0; // 0-based index into ids of the last non-empty id
+  ids.forEach((row: string[], i: number) => {
+    if (row[0]) lastFilled = i + 1;
+  });
+  return lastFilled + 2; // +2: row 1 is the header, ids array is 0-based from row 2
 }
 
 // Resolve the actual 1-based spreadsheet row for a product id by reading

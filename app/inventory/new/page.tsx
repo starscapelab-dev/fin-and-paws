@@ -33,7 +33,11 @@ export default function NewProductPage() {
       }),
     });
     if (res.ok) {
+      // Purge the App Router client cache so /inventory refetches and shows
+      // the new item; without this, the cached page is restored without a
+      // remount and the mount-only fetch never re-runs.
       router.push('/inventory');
+      router.refresh();
     } else {
       alert('Failed to save product');
       setSaving(false);

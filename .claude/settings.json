@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Get-ChildItem \"node_modules\\\\next\\\\dist\\\\docs\" -ErrorAction SilentlyContinue | Select-Object -First 40 Name; Write-Output \"---VERSION---\"; \\(Get-Content \"node_modules\\\\next\\\\package.json\" -Raw -ErrorAction SilentlyContinue | ConvertFrom-Json\\).version)"
+    ]
+  }
+}
